@@ -1,0 +1,37 @@
+debug = false
+loglevel = "ERROR" 
+defaultEntryPoints = ["https", "http"]
+[entryPoints]
+   [entryPoints.http]
+      address = ":80"
+      [entryPoints.http.redirect]
+      entryPoint = "https"
+   [entryPoints.https]
+      address = ":443"
+      [entryPoints.https.tls]
+   [entryPoints.traefik]
+      address = ":8080"
+      [entryPoints.traefik.auth.basic]
+      users = ["admin:$apr1$KO3HMoFZ$MyXFjnYMjCF5UYFiK3pA0/",]
+[api]
+  entryPoint = "traefik"
+
+[retry]
+
+[docker]
+   endpoint = "unix:///var/run/docker.sock"
+   domain = "olivetree.app"
+   watch = true 
+   exposedByDefault = false
+[acme]
+   email = "michaelkhanna@gmail.com"
+   storage = "acme.json"   
+   onHostRule = true
+   entryPoint = "https"
+   [acme.dnsChallenge]
+      provider = "digitalocean"
+      delayBeforeCheck = 0
+   [[acme.domains]]
+      main = "olivetree.app"
+      sans = ["olivetree.app"]
+

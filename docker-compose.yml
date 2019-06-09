@@ -1,0 +1,35 @@
+version: '3'
+services:   
+   reverse-proxy:
+      image: traefik:latest
+      restart: always
+      container_name: traefik
+      ports: 
+         - 80:80
+         - 443:443
+      expose:
+         - 8080
+      networks:
+         - external
+         - internal
+      environment:
+         - DO_AUTH_TOKEN=d7bc41dbad4b06b75dd40e4df263dd483dae9a5bebc750c07afbe2b16b593a3c
+      volumes:
+         - /var/run/docker.sock:/var/run/docker.sock
+         - /root/traefik/traefik.toml:/traefik.toml
+         - /root/traefik/acme.json:/acme.json
+      labels: 
+         - "traefik.backend=traefik"
+         - "traefik.docker.network=external"
+         - "traefik.enable=true"
+         - "traefik.frontend.rule=Host:Host:traefik.olivetree.app"
+         - "traefik.port=8080"
+         - "traefik.frontend.headers.forceSTSHeader=true"
+         - "traefik.frontend.headers.STSSeconds=315360000"
+         - "traefik.frontend.headers.STSIncludeSubdomains=true"
+         - "traefik.frontend.headers.STSPreload=true"
+networks:
+   external:
+      external: true   
+   internal:
+
